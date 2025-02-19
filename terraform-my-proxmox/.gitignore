@@ -11,4 +11,4 @@ variables.tf
 backup-main.txt
 
 # System files
-.DS_Store
+
