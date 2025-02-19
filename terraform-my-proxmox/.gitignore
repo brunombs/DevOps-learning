@@ -1,0 +1,14 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform/
+terraform.tfstate.backup
+variables.tf
+
+# Backup files
+backup-main.txt
+
+# System files
+.DS_Store
