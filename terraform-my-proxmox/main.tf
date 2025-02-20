@@ -24,7 +24,7 @@ resource "proxmox_vm_qemu" "vm-instance" {
   os_type     = "cloud-init"  # Mantido para sistemas Linux modernos
   cores       = 1
   memory      = 1024
-  vm_state    = "stopped"
+  vm_state    = "running"
   agent       = 1      # Habilita o QEMU Agent
 
   boot      = "order=scsi0;net0;ide0"
@@ -34,7 +34,7 @@ resource "proxmox_vm_qemu" "vm-instance" {
   # Cloud-Init configuration
   ciupgrade  = false
   ciuser     = "root"
-  # cipassword = "test1234"
+  cipassword = "test1234"
   sshkeys    = file("~/SSH/VM1/id_ed25519.pub")
   ipconfig0  = "ip=dhcp"
 
@@ -42,6 +42,23 @@ resource "proxmox_vm_qemu" "vm-instance" {
   serial {
     id = 0
   }
+
+  provisioner "remote-exec" {
+  inline = [
+    "sudo apt-get update",
+    "sudo apt-get install -y qemu-guest-agent",
+    "sudo systemctl start qemu-guest-agent",
+    "sudo systemctl enable qemu-guest-agent"
+  ]
+  
+  connection {
+    type        = "ssh"
+    user        = "root"
+    private_key = file("~/SSH/VM1/id_ed25519")
+    host        = self.default_ipv4_address
+    timeout     = "10m"
+  }
+}
 
   # Main disk (SCSI)
   disk {
